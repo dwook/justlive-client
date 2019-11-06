@@ -1,12 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useForm from 'react-hook-form';
 import Calendar from 'react-calendar';
+import dayjs from 'dayjs';
 import './Booking.scss';
 
+const branchList = ['서강', '신촌', '이화', '연대'];
+
+function loadSlot(date) {
+  const dt = date ? new Date(date) : new Date();
+  console.log('dt', dt);
+  const day = dt.getDay();
+  const isWeekend = day === 6 || day === 0;
+  let slotList;
+
+  if (!isWeekend) {
+    slotList = [];
+    const dateWeek = dayjs(dt).format('YYYY-MM-DD');
+    let startDateWeek = dayjs(dateWeek).set('hour', 10);
+    for (let i = 0; i < 18; i++) {
+      slotList.push(startDateWeek.add(30 * i, 'minute'));
+    }
+    console.log('평일', slotList);
+    return slotList;
+  } else {
+    slotList = [];
+    const dateWeekend = dayjs(dt).format('YYYY-MM-DD');
+    let startDateWeekend = dayjs(dateWeekend).set('hour', 11);
+    for (let i = 0; i < 8; i++) {
+      slotList.push(startDateWeekend.add(30 * i, 'minute'));
+    }
+    console.log('주말', slotList);
+    return slotList;
+  }
+}
+
 function Booking() {
+  const [slotList, setSlotList] = useState([]);
+  const [selectedDate, setDate] = useState(new Date());
+  const [selectedTime, setTime] = useState(null);
+  const [selectedBranch, setBranch] = useState(null);
+
+  useEffect(() => {
+    const data = loadSlot();
+    setSlotList(data);
+    console.log('list', slotList);
+  }, []);
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = data => console.log(data);
   console.log(errors);
+  const onDateClick = value => {
+    setDate(value);
+    const data = loadSlot(value);
+    setSlotList(data);
+    console.log(value);
+  };
+  const onTimeClick = value => {
+    setTime(value);
+    //setSlotList(value);
+    console.log(value);
+  };
+  const onBranchClick = value => {
+    setBranch(value);
+    console.log(value);
+  };
 
   return (
     <div className="section-booking">
@@ -40,7 +96,7 @@ function Booking() {
               <div className="form">
                 <input
                   type="tel"
-                  placeholder="하이픈(-)없이, 번호만 입력해주세요."
+                  placeholder="-없이, 숫자만 입력해주세요."
                   name="mobile"
                   ref={register({
                     required: true,
@@ -99,53 +155,38 @@ function Booking() {
           </div>
 
           <div className="row branch">
-            <div className="title">지점선택</div>
+            <div className="title">
+              지점선택
+              <span className="selected"> {selectedBranch}</span>
+            </div>
             <div className="form">
-              <label className="selected">
-                <input
-                  name="branch"
-                  type="radio"
-                  value="서강"
-                  ref={register({ required: true })}
-                />
-                서강
-              </label>
-
-              <label>
-                <input
-                  name="branch"
-                  type="radio"
-                  value="신촌"
-                  ref={register({ required: true })}
-                />
-                신촌
-              </label>
-
-              <label>
-                <input
-                  name="branch"
-                  type="radio"
-                  value="이화"
-                  ref={register({ required: true })}
-                />
-                이화
-              </label>
-
-              <label>
-                <input
-                  name="branch"
-                  type="radio"
-                  value="연대"
-                  ref={register({ required: true })}
-                />
-                연대
-              </label>
+              {branchList.map(branch => {
+                return (
+                  <label
+                    className={selectedBranch === branch ? 'selected' : ''}
+                    onClick={() => onBranchClick(branch)}
+                    key={branch}
+                  >
+                    <input
+                      name="branch"
+                      type="radio"
+                      value={branch}
+                      ref={register({ required: true })}
+                    />
+                    {branch}
+                  </label>
+                );
+              })}
             </div>
           </div>
 
           <div className="row date">
             <div className="title">
               일정선택
+              <span className="selected">
+                {selectedTime &&
+                  dayjs(selectedTime).format('YYYY년 MM월 DD일 HH:mm 타임')}
+              </span>
               {/* <input
                 type="date"
                 placeholder="tour_date"
@@ -153,12 +194,30 @@ function Booking() {
                 ref={register({ required: true })}
               /> */}
             </div>
-            <Calendar />
+            <Calendar
+              onClickDay={value => {
+                onDateClick(value);
+              }}
+              minDate={new Date()}
+              value={selectedDate}
+            />
             <div className="form">
-              <div className="time selected">10:00</div>
+              {/* <div className="time selected">10:00</div>
               <div className="time disabled">10:30</div>
               <div className="time">11:00</div>
-              <div className="time">11:30</div>
+              <div className="time">11:30</div> */}
+              {slotList &&
+                slotList.map(slot => {
+                  return (
+                    <div
+                      className="time"
+                      key={slot.$d}
+                      onClick={() => onTimeClick(slot.format())}
+                    >
+                      {slot.format('HH:mm')}
+                    </div>
+                  );
+                })}
             </div>
           </div>
 

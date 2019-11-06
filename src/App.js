@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import {} from 'react-router-dom';
 import Headers from './components/Header/Header';
 import Booking from './components/Booking/Booking';
 import './App.scss';
