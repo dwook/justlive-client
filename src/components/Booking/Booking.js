@@ -210,7 +210,9 @@ function Booking() {
                 slotList.map(slot => {
                   return (
                     <div
-                      className="time"
+                      className={`time ${
+                        selectedTime === slot.format() ? 'selected' : ''
+                      }`}
                       key={slot.$d}
                       onClick={() => onTimeClick(slot.format())}
                     >
