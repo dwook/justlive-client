@@ -39,12 +39,14 @@ function Booking() {
   const [slotList, setSlotList] = useState([]);
   const [selectedDate, setDate] = useState(new Date());
   const [selectedTime, setTime] = useState(null);
+  const [selectedMoveDate, setMoveDate] = useState(null);
   const [selectedBranch, setBranch] = useState(null);
 
   useEffect(() => {
     const data = loadSlot();
     setSlotList(data);
     console.log('list', slotList);
+    // eslint-disable-next-line
   }, []);
   const { register, setValue, handleSubmit, errors } = useForm();
   const onSubmit = data => {
@@ -58,6 +60,10 @@ function Booking() {
     setDate(value);
     const data = loadSlot(value);
     setSlotList(data);
+    console.log(value);
+  };
+  const onMoveDateClick = value => {
+    setMoveDate(value);
     console.log(value);
   };
   const onTimeClick = value => {
@@ -163,102 +169,117 @@ function Booking() {
                 </label>
               </div>
             </div>
+            <div className="row branch">
+              <div className="title">
+                지점선택
+                <span className="selected"> {selectedBranch}</span>
+              </div>
+              <div className="form">
+                {branchList.map(branch => {
+                  return (
+                    <label
+                      className={selectedBranch === branch ? 'selected' : ''}
+                      onClick={() => onBranchClick(branch)}
+                      key={branch}
+                    >
+                      <input
+                        name="branch"
+                        type="radio"
+                        value={branch}
+                        ref={register({ required: true })}
+                      />
+                      {branch}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <div className="row branch">
-            <div className="title">
-              지점선택
-              <span className="selected"> {selectedBranch}</span>
-            </div>
-            <div className="form">
-              {branchList.map(branch => {
-                return (
-                  <label
-                    className={selectedBranch === branch ? 'selected' : ''}
-                    onClick={() => onBranchClick(branch)}
-                    key={branch}
-                  >
-                    <input
-                      name="branch"
-                      type="radio"
-                      value={branch}
-                      ref={register({ required: true })}
-                    />
-                    {branch}
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="row date">
-            <div className="title">
-              일정선택
-              <span className="selected">
-                {selectedTime &&
-                  dayjs(selectedTime).format('YYYY년 MM월 DD일 HH:mm 타임')}
-              </span>
-              <input
-                type="hidden"
-                name="tour_date"
-                ref={register({ required: true })}
+          <div className="form-group">
+            <div className="row date">
+              <div className="title">
+                일정선택
+                <span className="selected">
+                  {selectedTime &&
+                    dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
+                </span>
+                <input
+                  type="hidden"
+                  name="tour_date"
+                  ref={register({ required: true })}
+                />
+              </div>
+              <Calendar
+                onClickDay={value => {
+                  onDateClick(value);
+                }}
+                minDate={new Date()}
+                value={selectedDate}
               />
-            </div>
-            <Calendar
-              onClickDay={value => {
-                onDateClick(value);
-              }}
-              minDate={new Date()}
-              value={selectedDate}
-            />
-            <div className="form">
-              {/* <div className="time selected">10:00</div>
+              <div className="form">
+                {/* <div className="time selected">10:00</div>
               <div className="time disabled">10:30</div>
               <div className="time">11:00</div>
               <div className="time">11:30</div> */}
-              {slotList &&
-                slotList.map(slot => {
-                  return (
-                    <div
-                      className={`time ${
-                        selectedTime === slot.format() ? 'selected' : ''
-                      }`}
-                      key={slot.$d}
-                      onClick={() => onTimeClick(slot.format())}
-                    >
-                      {slot.format('HH:mm')}
-                    </div>
-                  );
-                })}
+                {slotList &&
+                  slotList.map(slot => {
+                    return (
+                      <div
+                        className={`time ${
+                          selectedTime === slot.format() ? 'selected' : ''
+                        }`}
+                        key={slot.$d}
+                        onClick={() => onTimeClick(slot.format())}
+                      >
+                        {slot.format('HH:mm')}
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
 
-          <div className="row date">
-            <div className="title">
-              희망입주일
-              {/* <input
-                type="date"
-                placeholder="desired_move_date"
-                name="desired_move_date"
-                ref={register}
-              /> */}
-            </div>
-            <div className="form"></div>
-          </div>
-
-          <div className="row request">
-            <div className="title">요청사항</div>
-            <div className="form">
-              <input
-                type="text"
-                placeholder="요청할 내용이 있으면 적어주세요!"
-                name="request"
-                defaultValue="바로 입주하고 싶습니다."
-                ref={register}
+          <div className="form-group">
+            <div className="row date">
+              <div className="title">
+                희망입주일
+                <span className="selected">
+                  {selectedMoveDate &&
+                    dayjs(selectedMoveDate).format('YY년 MM월 DD일')}
+                </span>
+                <input type="hidden" name="desired_move_date" ref={register} />
+              </div>
+              <Calendar
+                onClickDay={value => {
+                  onMoveDateClick(value);
+                }}
+                minDate={new Date()}
               />
             </div>
+
+            <div className="row request">
+              <div className="title">요청사항</div>
+              <div className="form">
+                <input
+                  type="text"
+                  placeholder="요청할 내용이 있으면 적어주세요!"
+                  name="request"
+                  defaultValue="바로 입주하고 싶습니다."
+                  ref={register}
+                />
+              </div>
+            </div>
           </div>
-          <input type="submit" />
+
+          <div className="form-check">
+            <p>{selectedBranch && `${selectedBranch}점`}</p>
+            <p>
+              {selectedTime &&
+                dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
+            </p>
+            <input type="submit" value='투어예약' />
+          </div>
         </form>
       </div>
     </div>
