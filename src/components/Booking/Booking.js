@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import useForm from 'react-hook-form';
 import Calendar from 'react-calendar';
 import dayjs from 'dayjs';
@@ -45,9 +46,14 @@ function Booking() {
     setSlotList(data);
     console.log('list', slotList);
   }, []);
-  const { register, handleSubmit, errors } = useForm();
-  const onSubmit = data => console.log(data);
-  console.log(errors);
+  const { register, setValue, handleSubmit, errors } = useForm();
+  const onSubmit = data => {
+    console.log(data);
+    axios
+      .post('http://localhost:5000/api/bookings', { data })
+      .then(data => console.log('돌아온데이터', data.data));
+  };
+  console.log('에러', errors);
   const onDateClick = value => {
     setDate(value);
     const data = loadSlot(value);
@@ -58,6 +64,7 @@ function Booking() {
     setTime(value);
     //setSlotList(value);
     console.log(value);
+    setValue('tour_date', value);
   };
   const onBranchClick = value => {
     setBranch(value);
@@ -76,6 +83,7 @@ function Booking() {
                   type="text"
                   placeholder="Name"
                   name="name"
+                  defaultValue="김동욱"
                   ref={register({ required: true, maxLength: 80 })}
                 />
               </div>
@@ -87,6 +95,7 @@ function Booking() {
                   type="email"
                   placeholder="Email"
                   name="email"
+                  defaultValue="igerapex@gmail.com"
                   ref={register({ required: true, pattern: /^\S+@\S+$/i })}
                 />
               </div>
@@ -98,6 +107,7 @@ function Booking() {
                   type="tel"
                   placeholder="-없이, 숫자만 입력해주세요."
                   name="mobile"
+                  defaultValue="01073345096"
                   ref={register({
                     required: true,
                     maxLength: 12,
@@ -113,11 +123,11 @@ function Booking() {
                   type="number"
                   placeholder="Age"
                   name="age"
+                  defaultValue="21"
                   ref={register({ required: true, max: 99, maxLength: 2 })}
                 />
               </div>
             </div>
-
             <div className="row">
               <div className="title">성별</div>
               <div className="form">
@@ -136,6 +146,7 @@ function Booking() {
                     name="gender"
                     type="radio"
                     value="female"
+                    defaultChecked
                     ref={register({ required: true })}
                   />
                   Female
@@ -187,12 +198,11 @@ function Booking() {
                 {selectedTime &&
                   dayjs(selectedTime).format('YYYY년 MM월 DD일 HH:mm 타임')}
               </span>
-              {/* <input
-                type="date"
-                placeholder="tour_date"
+              <input
+                type="hidden"
                 name="tour_date"
                 ref={register({ required: true })}
-              /> */}
+              />
             </div>
             <Calendar
               onClickDay={value => {
@@ -242,7 +252,8 @@ function Booking() {
               <input
                 type="text"
                 placeholder="요청할 내용이 있으면 적어주세요!"
-                name="referrer"
+                name="request"
+                defaultValue="바로 입주하고 싶습니다."
                 ref={register}
               />
             </div>
