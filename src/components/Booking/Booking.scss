@@ -3,7 +3,6 @@
 }
 
 .section-booking {
-  background-image: radial-gradient(circle at 50% 21%, #3dceac, #2caf90);
   padding: 5%;
 }
 
@@ -177,6 +176,30 @@
         }
       }
     }
+  }
+}
+
+.complete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #fff;
+  padding: 5% 5% 20%;
+  border-radius: 16px;
+  .title {
+    font-size: 18px;
+    color: #546476;
+  }
+  .detail {
+    margin-bottom: 20px;
+    p {
+      color: #1b2733;
+      margin: 2px 0;
+    }
+  }
+  .done {
+    width: 60%;
   }
 }
 
