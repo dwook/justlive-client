@@ -11,6 +11,25 @@
   padding: 5%;
   margin-bottom: 15%;
   border-radius: 16px;
+  .form-group {
+    position: relative;
+    .button-back {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+      background: red;
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      color: #fff;
+      background: #21846d;
+      cursor: pointer;
+    }
+  }
   .form-check {
     display: flex;
     justify-content: center;
@@ -30,6 +49,7 @@
       font-size: 14px;
     }
   }
+
   input[type='submit'] {
     -webkit-appearance: none;
     padding: 10px 20px;
@@ -192,7 +212,7 @@
     color: #546476;
   }
   .detail {
-    margin-bottom: 20px;
+    margin: 20px 0;
     p {
       color: #1b2733;
       margin: 2px 0;
