@@ -6,7 +6,9 @@ import dayjs from 'dayjs';
 import './Booking.scss';
 import Finish from '../Finish/Finish';
 import { FiChevronLeft } from 'react-icons/fi';
-
+import dotenv from 'dotenv';
+dotenv.config();
+const SERVER_URL = process.env.SERVER_URL;
 const branchList = ['서강', '신촌', '이화', '연대'];
 
 async function loadSlot(date = new Date(), branch) {
@@ -19,7 +21,7 @@ async function loadSlot(date = new Date(), branch) {
 
   console.log('보내는 값', date, branch);
   await axios
-    .get('http://localhost:5000/api/bookings', {
+    .get(`${SERVER_URL}/api/bookings`, {
       params: {
         branch: branch,
         begin: date,
@@ -76,7 +78,7 @@ function Booking() {
   const onSubmit = data => {
     console.log(data);
     axios
-      .post('http://localhost:5000/api/bookings', { data })
+      .post(`${SERVER_URL}/api/bookings`, { data })
       .then(data => console.log('돌아온데이터', data.data));
     setIsCompleted(true);
   };
