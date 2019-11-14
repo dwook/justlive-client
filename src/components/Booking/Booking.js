@@ -328,11 +328,11 @@ function Booking() {
       {isCompleted && (
         <div className="complete">
           <Finish />
-          <div className="title">투어예약이 완료되었습니다.</div>
           <div className="detail">
             <p>{selectedBranch}</p>
             <p>{dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}</p>
           </div>
+          <div className="title">투어예약이 완료되었습니다.</div>
         </div>
       )}
     </>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Headers from './components/Header/Header';
 import Booking from './components/Booking/Booking';
 import './App.scss';
@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <Headers />
       <div className="main">
-        <Booking />
+        <Route path="/book" component={Booking} />
       </div>
     </div>
   );

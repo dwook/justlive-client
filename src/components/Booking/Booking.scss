@@ -251,9 +251,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #fff;
-  padding: 5% 5% 20%;
-  border-radius: 16px;
   .title {
     font-size: 18px;
     color: #546476;
@@ -261,7 +258,7 @@
   .detail {
     margin: 20px 0;
     p {
-      color: #1b2733;
+      color: #fff;
       margin: 2px 0;
     }
   }
