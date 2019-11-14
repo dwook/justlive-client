@@ -1,26 +1,22 @@
+@import './base/base.scss';
+
 .App {
-  min-height: 100vh;
   text-align: center;
-  background-image: radial-gradient(circle at 50% 21%, #3dceac, #2caf90);
-}
-
-.App-logo {
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #09d3ac;
+  &:after {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background-image: radial-gradient(
+      circle at 50% 21%,
+      $main-dark-color,
+      darken($main-dark-color, 2%)
+    );
+  }
 }
 
 button {

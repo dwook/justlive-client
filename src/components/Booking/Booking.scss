@@ -1,47 +1,75 @@
+@import '../../base/base.scss';
+
 ::placeholder {
   color: #828282;
 }
 
-.section-booking {
-  padding: 5%;
+.button-back {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 5%;
+  top: 20px;
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
 }
 
-.form-booking {
-  background: #fff;
-  padding: 5%;
-  margin-bottom: 15%;
-  border-radius: 16px;
-  .form-group {
+@keyframes slideup {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  30% {
+    opacity: 0.35;
+  }
+  60% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+}
+
+.form-wrapper {
+  width: 100%;
+  margin-top: -70px;
+  form {
     position: relative;
-    .button-back {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
+    display: flex;
+    justify-content: center;
+    .form-group {
+      width: 90%;
       position: absolute;
-      top: -15px;
-      left: -15px;
-      font-size: 30px;
-      background: red;
-      width: 40px;
-      height: 40px;
-      border-radius: 20px;
-      color: #fff;
-      background: #21846d;
-      cursor: pointer;
+      background: #fff;
+      padding: 5%;
+      margin-top: 70px;
+      margin-bottom: 100px;
+      border-radius: 16px;
+      box-sizing: border-box;
+      z-index: -100;
+      &.active {
+        animation: slideup 0.8s;
+        z-index: 0;
+      }
     }
   }
-  .form-check {
+  .form-summary {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    width: 101%;
-    bottom: 0;
-    padding: 15px 5%;
-    margin-left: -10%;
+    width: 100%;
+    height: 120px;
+    padding-bottom: 40px;
     box-sizing: border-box;
     color: #fff;
-    background: darken(#3dceac, 20%);
+    background: darken($main-dark-color, 5%);
     box-shadow: rgba(0, 0, 0, 0.03) 0px -24px 32px 0px,
       rgba(0, 0, 0, 0.06) 0px -8px 32px 0px;
     p {
@@ -49,22 +77,21 @@
       font-size: 14px;
     }
   }
-
   input[type='submit'] {
     -webkit-appearance: none;
     padding: 10px 20px;
     margin-left: auto;
-    background: #fff;
+    color: #fff;
     border: none;
     border-radius: 20px;
     font-size: 16px;
-    color: #2caf90;
+    background: $main-dark-color;
     box-shadow: 0 2px 4px 0 rgba(81, 99, 120, 0.2);
     cursor: pointer;
   }
   .row {
     display: flex;
-    margin: 8px 0;
+    margin: 0 0 8px;
     padding: 5%;
     min-height: 62px;
     border: 1px solid #e0e0e0;
@@ -76,7 +103,7 @@
       align-items: center;
       display: flex;
       .selected {
-        color: #2caf90;
+        color: $main-dark-color;
         margin-left: auto;
         font-weight: bold;
       }
@@ -104,7 +131,7 @@
         outline: none;
         cursor: pointer;
         &:checked {
-          border: 4px solid #2caf90;
+          border: 4px solid $main-dark-color;
         }
       }
     }
@@ -143,8 +170,8 @@
         border: 1px solid #bdbdbd;
         cursor: pointer;
         &.selected {
-          background: #2caf90;
-          border-color: #2c7f74;
+          background: $main-dark-color;
+          border-color: darken($main-dark-color, 5%);
           color: #fff;
         }
       }
@@ -174,8 +201,8 @@
           cursor: not-allowed;
         }
         &.selected {
-          background: #2caf90;
-          border-color: #2c7f74;
+          background: $main-dark-color;
+          border-color: darken($main-dark-color, 5%);
           color: #fff;
         }
       }
@@ -193,6 +220,26 @@
         width: 100%;
         input {
           width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .button-back {
+    left: 33%;
+  }
+  .form-wrapper {
+    form {
+      .form-group {
+        width: 33%;
+        padding: 20px;
+      }
+      .form-summary {
+        // padding: 30px 33% 120px;
+        p {
+          font-size: 16px;
         }
       }
     }
@@ -223,32 +270,6 @@
   }
 }
 
-@media screen and (min-width: 900px) {
-  form {
-    display: flex;
-  }
-  .section-booking {
-    padding: 2% 5%;
-    .form-booking {
-      flex-direction: row;
-      padding: 1%;
-      margin-bottom: 4%;
-      .form-group {
-        width: 33%;
-        box-sizing: border-box;
-        padding: 20px;
-      }
-      .form-check {
-        padding: 30px 6%;
-        margin-left: -6%;
-        p {
-          font-size: 16px;
-        }
-      }
-    }
-  }
-}
-
 .react-calendar {
   border: none;
   margin: 0 auto 20px;
@@ -256,7 +277,7 @@
     margin-bottom: 5px;
   }
   .react-calendar__tile--active {
-    background: #2caf90;
+    background: $main-dark-color;
   }
   .react-calendar .react-calendar__navigation button[disabled],
   .react-calendar__navigation button[disabled],
@@ -268,7 +289,7 @@
   .react-calendar__tile--active:enabled:focus,
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus {
-    background: #2caf90;
+    background: $main-dark-color;
     color: #fff;
   }
   .react-calendar__month-view__days__day--neighboringMonth {

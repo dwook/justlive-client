@@ -103,232 +103,223 @@ function Booking() {
     setSlotList(data);
     console.log('list', slotList);
     setStep(1);
+    console.log(step);
   };
   const onBackClick = () => {
     setStep(prevCount => prevCount - 1);
-    setBranch(null);
-    setTime(null);
+    if (step === 0) setBranch(null);
+    if (step === 1) setTime(null);
   };
 
   return (
-    <div className="section-booking">
+    <>
       {!isCompleted && (
-        <div className="form-booking">
+        <div className="form-wrapper">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {step === 0 && (
-              <div className="form-group">
-                <div className="row">
-                  <div className="title">이름</div>
-                  <div className="form">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      name="name"
-                      defaultValue="김동욱"
-                      ref={register({ required: true, maxLength: 80 })}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="title">이메일</div>
-                  <div className="form">
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      name="email"
-                      defaultValue="igerapex@gmail.com"
-                      ref={register({ required: true, pattern: /^\S+@\S+$/i })}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="title">휴대폰</div>
-                  <div className="form">
-                    <input
-                      type="tel"
-                      placeholder="'-'제외하고, 숫자만 입력해주세요."
-                      name="mobile"
-                      defaultValue="01073345096"
-                      ref={register({
-                        required: true,
-                        maxLength: 12,
-                        pattern: /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/i
-                      })}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="title">나이</div>
-                  <div className="form">
-                    <input
-                      type="number"
-                      placeholder="Age"
-                      name="age"
-                      defaultValue="21"
-                      ref={register({ required: true, max: 99, maxLength: 2 })}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="title">성별</div>
-                  <div className="form">
-                    <label>
-                      <input
-                        name="gender"
-                        type="radio"
-                        value="male"
-                        defaultChecked
-                        ref={register({ required: true })}
-                      />
-                      Male
-                    </label>
-
-                    <label>
-                      <input
-                        name="gender"
-                        type="radio"
-                        value="female"
-                        ref={register({ required: true })}
-                      />
-                      Female
-                    </label>
-
-                    <label>
-                      <input
-                        name="gender"
-                        type="radio"
-                        value="other"
-                        ref={register({ required: true })}
-                      />
-                      Other
-                    </label>
-                  </div>
-                </div>
-                <div className="row branch">
-                  <div className="title">
-                    지점선택
-                    <span className="selected"> {selectedBranch}</span>
-                  </div>
-                  <div className="form">
-                    {branchList.map(branch => {
-                      return (
-                        <label
-                          className={
-                            selectedBranch === branch ? 'selected' : ''
-                          }
-                          onClick={() => onBranchClick(branch)}
-                          key={branch}
-                        >
-                          <input
-                            name="branch"
-                            type="radio"
-                            value={branch}
-                            ref={register({ required: true })}
-                          />
-                          {branch}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-            {step === 1 && (
-              <div className="form-group">
-                <span className="button-back" onClick={onBackClick}>
-                  <FiChevronLeft />
-                </span>
-                <div className="row date">
-                  <div className="title">
-                    일정선택
-                    <span className="selected">
-                      {selectedTime &&
-                        dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
-                    </span>
-                    <input
-                      type="hidden"
-                      name="tour_date"
-                      ref={register({ required: true })}
-                    />
-                  </div>
-                  <Calendar
-                    onClickDay={value => {
-                      onDateClick(value);
-                    }}
-                    minDate={new Date()}
-                    value={selectedDate}
-                  />
-                  <div className="form">
-                    {/* <div className="time selected">10:00</div>
-              <div className="time disabled">10:30</div>
-              <div className="time">11:00</div>
-              <div className="time">11:30</div> */}
-                    {slotList &&
-                      slotList.map(slot => {
-                        return (
-                          <div
-                            className={`time ${
-                              selectedTime === slot.format() ? 'selected' : ''
-                            }`}
-                            key={slot.$d}
-                            onClick={() => onTimeClick(slot.format())}
-                          >
-                            {slot.format('HH:mm')}
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div className="form-group">
-                <span className="button-back" onClick={onBackClick}>
-                  <FiChevronLeft />
-                </span>
-                <div className="row date">
-                  <div className="title">
-                    희망입주일
-                    <span className="selected">
-                      {selectedMoveDate &&
-                        dayjs(selectedMoveDate).format('YY년 MM월 DD일')}
-                    </span>
-                    <input
-                      type="hidden"
-                      name="desired_move_date"
-                      ref={register}
-                    />
-                  </div>
-                  <Calendar
-                    onClickDay={value => {
-                      onMoveDateClick(value);
-                    }}
-                    minDate={new Date()}
-                  />
-                </div>
-
-                <div className="row request">
-                  <div className="title">요청사항</div>
-                  <div className="form">
-                    <input
-                      type="text"
-                      placeholder="요청할 내용이 있으면 적어주세요!"
-                      name="request"
-                      defaultValue="바로 입주하고 싶습니다."
-                      ref={register}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="form-check">
+            <div className="form-summary">
               <p>{selectedBranch && `${selectedBranch}점`}</p>
               <p>
                 {selectedTime &&
                   dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
               </p>
+            </div>
+            {step >= 1 && (
+              <span className="button-back" onClick={onBackClick}>
+                <FiChevronLeft />
+              </span>
+            )}
+            <div className={`form-group ${step === 0 ? 'active' : ''}`}>
+              <div className="row">
+                <div className="title">이름</div>
+                <div className="form">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    name="name"
+                    defaultValue="김동욱"
+                    ref={register({ required: true, maxLength: 80 })}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="title">이메일</div>
+                <div className="form">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    name="email"
+                    defaultValue="igerapex@gmail.com"
+                    ref={register({ required: true, pattern: /^\S+@\S+$/i })}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="title">휴대폰</div>
+                <div className="form">
+                  <input
+                    type="tel"
+                    placeholder="'-'제외하고, 숫자만 입력해주세요."
+                    name="mobile"
+                    defaultValue="01073345096"
+                    ref={register({
+                      required: true,
+                      maxLength: 12,
+                      pattern: /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/i
+                    })}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="title">나이</div>
+                <div className="form">
+                  <input
+                    type="number"
+                    placeholder="Age"
+                    name="age"
+                    defaultValue="21"
+                    ref={register({ required: true, max: 99, maxLength: 2 })}
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="title">성별</div>
+                <div className="form">
+                  <label>
+                    <input
+                      name="gender"
+                      type="radio"
+                      value="male"
+                      defaultChecked
+                      ref={register({ required: true })}
+                    />
+                    Male
+                  </label>
+
+                  <label>
+                    <input
+                      name="gender"
+                      type="radio"
+                      value="female"
+                      ref={register({ required: true })}
+                    />
+                    Female
+                  </label>
+
+                  <label>
+                    <input
+                      name="gender"
+                      type="radio"
+                      value="other"
+                      ref={register({ required: true })}
+                    />
+                    Other
+                  </label>
+                </div>
+              </div>
+              <div className="row branch">
+                <div className="title">
+                  지점선택
+                  <span className="selected"> {selectedBranch}</span>
+                </div>
+                <div className="form">
+                  {branchList.map(branch => {
+                    return (
+                      <label
+                        className={selectedBranch === branch ? 'selected' : ''}
+                        onClick={() => onBranchClick(branch)}
+                        key={branch}
+                      >
+                        <input
+                          name="branch"
+                          type="radio"
+                          value={branch}
+                          ref={register({ required: true })}
+                        />
+                        {branch}
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className={`form-group ${step === 1 ? 'active' : ''}`}>
+              <div className="row date">
+                <div className="title">
+                  일정선택
+                  <span className="selected">
+                    {selectedTime &&
+                      dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
+                  </span>
+                  <input
+                    type="hidden"
+                    name="tour_date"
+                    ref={register({ required: true })}
+                  />
+                </div>
+                <Calendar
+                  onClickDay={value => {
+                    onDateClick(value);
+                  }}
+                  minDate={new Date()}
+                  value={selectedDate}
+                />
+                <div className="form">
+                  {/* <div className="time selected">10:00</div>
+              <div className="time disabled">10:30</div>
+              <div className="time">11:00</div>
+              <div className="time">11:30</div> */}
+                  {slotList &&
+                    slotList.map(slot => {
+                      return (
+                        <div
+                          className={`time ${
+                            selectedTime === slot.format() ? 'selected' : ''
+                          }`}
+                          key={slot.$d}
+                          onClick={() => onTimeClick(slot.format())}
+                        >
+                          {slot.format('HH:mm')}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
+
+            <div className={`form-group ${step === 2 ? 'active' : ''}`}>
+              <div className="row date">
+                <div className="title">
+                  희망입주일
+                  <span className="selected">
+                    {selectedMoveDate &&
+                      dayjs(selectedMoveDate).format('YY년 MM월 DD일')}
+                  </span>
+                  <input
+                    type="hidden"
+                    name="desired_move_date"
+                    ref={register}
+                  />
+                </div>
+                <Calendar
+                  onClickDay={value => {
+                    onMoveDateClick(value);
+                  }}
+                  minDate={new Date()}
+                />
+              </div>
+              <div className="row request">
+                <div className="title">요청사항</div>
+                <div className="form">
+                  <input
+                    type="text"
+                    placeholder="요청할 내용이 있으면 적어주세요!"
+                    name="request"
+                    defaultValue="바로 입주하고 싶습니다."
+                    ref={register}
+                  />
+                </div>
+              </div>
               <input type="submit" value="투어예약" />
             </div>
           </form>
@@ -344,7 +335,7 @@ function Booking() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
