@@ -4,26 +4,33 @@
   color: #828282;
 }
 
-.button-back,
-.button-close {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 20px;
-  font-size: 30px;
-  width: 40px;
+.navigation {
+  position: relative;
   height: 40px;
-  border-radius: 20px;
-  color: #fff;
-  cursor: pointer;
-}
-.button-back {
-  left: 5%;
-}
-
-.button-close {
-  right: 5%;
+  margin-top: 30px;
+  .current,
+  .button-prev,
+  .button-next {
+    position: absolute;
+  }
+  .current {
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    color: #ced4da;
+  }
+  .button-prev,
+  .button-next {
+    display: flex;
+    font-size: 30px;
+    padding: 5px;
+  }
+  .button-prev {
+    left: 0;
+  }
+  .button-next {
+    right: 0;
+  }
 }
 
 @keyframes slideup {
@@ -55,7 +62,7 @@
       width: 90%;
       position: absolute;
       background: #fff;
-      padding: 5% 5% 10%;
+      padding: 5% 5% 30px;
       margin-top: 75px;
       margin-bottom: 100px;
       border-radius: 16px;
@@ -74,7 +81,6 @@
   }
   .form-summary {
     display: flex;
-    justify-content: center;
     align-items: center;
     width: 100%;
     height: 120px;
@@ -84,16 +90,36 @@
     background: darken($main-dark-color, 5%);
     box-shadow: rgba(0, 0, 0, 0.03) 0px -24px 32px 0px,
       rgba(0, 0, 0, 0.06) 0px -8px 32px 0px;
-    p {
-      padding: 0 2% 0;
-      font-size: 14px;
+    .content {
+      position: absolute;
+      left: 5%;
+      width: 100%;
+      text-align: left;
+      span {
+        padding: 0 2% 0;
+        font-size: 14px;
+      }
+    }
+    .button-close {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 20px;
+      font-size: 30px;
+      right: 5%;
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
     }
   }
   input[type='submit'] {
     -webkit-appearance: none;
     padding: 10px 20px;
-    margin-left: auto;
-    margin-top: 10px;
+    position: absolute;
+    right: 0;
     color: #fff;
     border: none;
     border-radius: 20px;
@@ -240,12 +266,6 @@
 }
 
 @media screen and (min-width: 900px) {
-  .button-back {
-    left: 33%;
-  }
-  .button-close {
-    right: 33%;
-  }
   .form-wrapper {
     form {
       .form-group {
@@ -253,7 +273,13 @@
         padding: 20px;
       }
       .form-summary {
-        // padding: 30px 33% 120px;
+        .content {
+          left: 33%;
+          width: 100%;
+        }
+        .button-close {
+          right: 33%;
+        }
         p {
           font-size: 16px;
         }

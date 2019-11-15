@@ -6,17 +6,17 @@ import logo from '../../assets/logo.jpg';
 function Header() {
   return (
     <div className="header">
-      <img src={logo} className="logo" alt="justlive" />
+      <Link to="/">
+        <img src={logo} className="logo" alt="justlive" />
+      </Link>
       <Switch>
         <Route
           path="/"
           render={() => {
             return (
-              <span className="button">
-                <Link to="/book" exact="true">
-                  투어예약
-                </Link>
-              </span>
+              <Link className="button" to="/book" exact="true">
+                <span>투어예약</span>
+              </Link>
             );
           }}
         />
@@ -24,9 +24,9 @@ function Header() {
           path="/book"
           render={() => {
             return (
-              <span className="button">
-                <Link to="/">메인으로</Link>
-              </span>
+              <Link className="button" to="/">
+                <span>메인으로</span>
+              </Link>
             );
           }}
         />

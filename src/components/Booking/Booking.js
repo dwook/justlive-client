@@ -6,7 +6,7 @@ import Calendar from 'react-calendar';
 import dayjs from 'dayjs';
 import './Booking.scss';
 import Finish from '../Finish/Finish';
-import { FiChevronLeft, FiX } from 'react-icons/fi';
+import { FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import dotenv from 'dotenv';
 dotenv.config();
 const REACT_APP_SERVER_URL = process.env.REACT_APP_SERVER_URL;
@@ -63,19 +63,41 @@ async function loadSlot(date = new Date(), branch) {
   }
 }
 
+function Navigation({ step, onPrevClick, onNextClick }) {
+  return (
+    <div className="navigation">
+      {step >= 2 && (
+        <span className="button-prev" onClick={onPrevClick}>
+          <FiChevronLeft />
+        </span>
+      )}
+      <span className="current">{step}/4</span>
+      {step < 4 && (
+        <span className="button-next" onClick={onNextClick}>
+          <FiChevronRight />
+        </span>
+      )}
+      {step === 4 && <input type="submit" value="투어예약" />}
+    </div>
+  );
+}
+
 function Booking() {
   const [slotList, setSlotList] = useState([]);
   const [selectedDate, setDate] = useState(new Date());
   const [selectedTime, setTime] = useState(null);
   const [selectedMoveDate, setMoveDate] = useState(null);
   const [selectedBranch, setBranch] = useState(null);
-  const [step, setStep] = useState(0);
+  const [mobile, setMobile] = useState('');
+  const [step, setStep] = useState(1);
   const [isCompleted, setIsCompleted] = useState(null);
 
+  const { register, setValue, handleSubmit, errors } = useForm({
+    validateCriteriaMode: 'all'
+  });
   useEffect(() => {
     // eslint-disable-next-line
   }, []);
-  const { register, setValue, handleSubmit, errors } = useForm();
   const onSubmit = data => {
     console.log(data);
     axios
@@ -84,37 +106,36 @@ function Booking() {
     setIsCompleted(true);
   };
   console.log('에러', errors);
-  const onDateClick = async value => {
-    setDate(value);
-    const data = await loadSlot(value, setBranch);
-    setSlotList(data);
-    console.log(value);
-  };
-  const onMoveDateClick = value => {
-    setMoveDate(value);
-    console.log(value);
-  };
-  const onGenderClick = () => {
-    setStep(1);
-  };
   const onBranchClick = async value => {
     setBranch(value);
+    console.log(value);
     const data = await loadSlot(selectedDate, value);
     setSlotList(data);
     console.log('list', slotList);
-    setStep(2);
-    console.log(step);
+  };
+  const onDateClick = async value => {
+    setDate(value);
+    const data = await loadSlot(value, selectedBranch);
+    setSlotList(data);
+    console.log(value);
   };
   const onTimeClick = value => {
     setTime(value);
     console.log(value);
     setValue('tour_date', value);
-    setStep(3);
   };
-  const onBackClick = () => {
-    setStep(prevCount => prevCount - 1);
-    if (step === 1) setBranch(null);
-    if (step === 2) setTime(null);
+  const onMoveDateClick = value => {
+    setMoveDate(value);
+    console.log(value);
+  };
+
+  const onPrevClick = () => {
+    setStep(step - 1);
+    if (step === 2) setBranch(null);
+    if (step === 3) setTime(null);
+  };
+  const onNextClick = () => {
+    setStep(step + 1);
   };
 
   return (
@@ -123,16 +144,13 @@ function Booking() {
         <div className="form-wrapper">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-summary">
-              {step >= 1 && (
-                <span className="button-back" onClick={onBackClick}>
-                  <FiChevronLeft />
+              <div className="content">
+                <span>{selectedBranch && `${selectedBranch}점`}</span>
+                <span>
+                  {selectedTime &&
+                    dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
                 </span>
-              )}
-              <p>{selectedBranch && `${selectedBranch}점`}</p>
-              <p>
-                {selectedTime &&
-                  dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
-              </p>
+              </div>
               <Link to="/">
                 <span className="button-close">
                   <FiX />
@@ -140,8 +158,8 @@ function Booking() {
               </Link>
             </div>
 
-            <div className={`form-group ${step === 0 ? 'active' : ''}`}>
-              <h2>필수정보</h2>
+            <div className={`form-group ${step === 1 ? 'active' : ''}`}>
+              <h2>투어예약을 위한 정보를 입력해주세요.</h2>
               <div className="row">
                 <div className="title">이름</div>
                 <div className="form">
@@ -149,8 +167,11 @@ function Booking() {
                     type="text"
                     placeholder="Name"
                     name="name"
-                    ref={register({ required: true, maxLength: 80 })}
+                    ref={register({ required: true })}
                   />
+                  <p className="error">
+                    {errors.name && '이름을 입력해주세요!'}
+                  </p>
                 </div>
               </div>
               <div className="row">
@@ -162,6 +183,10 @@ function Booking() {
                     name="email"
                     ref={register({ required: true, pattern: /^\S+@\S+$/i })}
                   />
+                  <p className="error">
+                    {errors.email &&
+                      '이메일 양식을 지켜서 필수로 입력해주세요!'}
+                  </p>
                 </div>
               </div>
               <div className="row">
@@ -176,7 +201,19 @@ function Booking() {
                       maxLength: 12,
                       pattern: /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/i
                     })}
+                    value={mobile}
+                    onChange={event => {
+                      if (isNaN(Number(event.target.value))) {
+                        return;
+                      } else {
+                        setMobile(event.target.value);
+                        setValue('mobile', event.target.value);
+                      }
+                    }}
                   />
+                  <p className="error">
+                    {errors.mobile && '숫자만 입력해주세요'}
+                  </p>
                 </div>
               </div>
               <div className="row">
@@ -193,7 +230,7 @@ function Booking() {
               <div className="row">
                 <div className="title">성별</div>
                 <div className="form">
-                  <label onClick={onGenderClick}>
+                  <label>
                     <input
                       name="gender"
                       type="radio"
@@ -203,7 +240,7 @@ function Booking() {
                     남성
                   </label>
 
-                  <label onClick={onGenderClick}>
+                  <label>
                     <input
                       name="gender"
                       type="radio"
@@ -213,7 +250,7 @@ function Booking() {
                     여성
                   </label>
 
-                  <label onClick={onGenderClick}>
+                  <label>
                     <input
                       name="gender"
                       type="radio"
@@ -224,9 +261,14 @@ function Booking() {
                   </label>
                 </div>
               </div>
+              <Navigation
+                step={step}
+                onPrevClick={onPrevClick}
+                onNextClick={onNextClick}
+              />
             </div>
 
-            <div className={`form-group ${step === 1 ? 'active' : ''}`}>
+            <div className={`form-group ${step === 2 ? 'active' : ''}`}>
               <h2>투어하고 싶은 지점을 선택해주세요.</h2>
               <div className="row branch">
                 {/* <div className="title">
@@ -253,9 +295,14 @@ function Booking() {
                   })}
                 </div>
               </div>
+              <Navigation
+                step={step}
+                onPrevClick={onPrevClick}
+                onNextClick={onNextClick}
+              />
             </div>
 
-            <div className={`form-group ${step === 2 ? 'active' : ''}`}>
+            <div className={`form-group ${step === 3 ? 'active' : ''}`}>
               <h2>투어하고 싶은 타임을 선택해주세요.</h2>
               <div className="row date">
                 {/* <div className="title">
@@ -298,9 +345,14 @@ function Booking() {
                     })}
                 </div>
               </div>
+              <Navigation
+                step={step}
+                onPrevClick={onPrevClick}
+                onNextClick={onNextClick}
+              />
             </div>
 
-            <div className={`form-group ${step === 3 ? 'active' : ''}`}>
+            <div className={`form-group ${step === 4 ? 'active' : ''}`}>
               <h2>추가정보</h2>
               <div className="row date">
                 <div className="title">
@@ -333,7 +385,11 @@ function Booking() {
                   />
                 </div>
               </div>
-              <input type="submit" value="투어예약" />
+              <Navigation
+                step={step}
+                onPrevClick={onPrevClick}
+                onNextClick={onNextClick}
+              />
             </div>
           </form>
         </div>
