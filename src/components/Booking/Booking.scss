@@ -4,12 +4,12 @@
   color: #828282;
 }
 
-.button-back {
+.button-back,
+.button-close {
   display: inline-flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: 5%;
   top: 20px;
   font-size: 30px;
   width: 40px;
@@ -17,6 +17,13 @@
   border-radius: 20px;
   color: #fff;
   cursor: pointer;
+}
+.button-back {
+  left: 5%;
+}
+
+.button-close {
+  right: 5%;
 }
 
 @keyframes slideup {
@@ -39,7 +46,7 @@
 
 .form-wrapper {
   width: 100%;
-  margin-top: -70px;
+  margin-top: -75px;
   form {
     position: relative;
     display: flex;
@@ -48,12 +55,17 @@
       width: 90%;
       position: absolute;
       background: #fff;
-      padding: 5%;
-      margin-top: 70px;
+      padding: 5% 5% 10%;
+      margin-top: 75px;
       margin-bottom: 100px;
       border-radius: 16px;
       box-sizing: border-box;
       z-index: -100;
+      h2 {
+        margin-bottom: 20px;
+        font-size: 18px;
+        text-align: left;
+      }
       &.active {
         animation: slideup 0.8s;
         z-index: 0;
@@ -81,6 +93,7 @@
     -webkit-appearance: none;
     padding: 10px 20px;
     margin-left: auto;
+    margin-top: 10px;
     color: #fff;
     border: none;
     border-radius: 20px;
@@ -229,6 +242,9 @@
 @media screen and (min-width: 900px) {
   .button-back {
     left: 33%;
+  }
+  .button-close {
+    right: 33%;
   }
   .form-wrapper {
     form {

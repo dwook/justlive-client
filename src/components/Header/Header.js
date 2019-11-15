@@ -1,33 +1,32 @@
 import React from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import './Header.scss';
+import logo from '../../assets/logo.jpg';
 
 function Header() {
   return (
     <div className="header">
-      <div className="logo">Just Live</div>
+      <img src={logo} className="logo" alt="justlive" />
       <Switch>
-        <Route
-          path="/book"
-          render={() => {
-            return (
-              <button className="button">
-                <Link to="/" exact>
-                  메인으로
-                </Link>
-              </button>
-            );
-          }}
-        />
         <Route
           path="/"
           render={() => {
             return (
-              <button className="button">
-                <Link to="/book" exact>
+              <span className="button">
+                <Link to="/book" exact="true">
                   투어예약
                 </Link>
-              </button>
+              </span>
+            );
+          }}
+        />
+        <Route
+          path="/book"
+          render={() => {
+            return (
+              <span className="button">
+                <Link to="/">메인으로</Link>
+              </span>
             );
           }}
         />

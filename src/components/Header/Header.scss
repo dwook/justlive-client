@@ -1,9 +1,10 @@
+@import '../../base/base.scss';
+
 .header {
   display: flex;
   position: fixed;
   z-index: 100;
   padding: 15px 5%;
-  background: #fff;
   width: 100%;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.03) 0px 24px 32px 0px,
@@ -13,7 +14,6 @@
     font-size: 20px;
     line-height: 40px;
     height: 40px;
-    color: #1b2733;
   }
   .button {
     margin-left: auto;
@@ -21,12 +21,17 @@
     font-size: 16px;
     border-radius: 20px;
     border: none;
-    -webkit-appearance: none;
-    background: #00ca71;
+    background: $main-highlight-color;
     box-shadow: 0 2px 4px 0 rgba(81, 99, 120, 0.2);
     cursor: pointer;
     a {
-      color: #fff;
+      color: $main-dark-color;
     }
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .header {
+    padding: 15px 25%;
   }
 }
