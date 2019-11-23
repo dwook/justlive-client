@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import useForm from 'react-hook-form';
@@ -14,13 +14,10 @@ const branchList = ['서강', '신촌', '이화', '연대'];
 
 async function loadSlot(date = new Date(), branch) {
   const dt = new Date(date);
-  console.log('dt', dt);
   const day = dt.getDay();
   const isWeekend = day === 6 || day === 0;
-
   let bookingList = [];
 
-  console.log('보내는 값', date, branch);
   await axios
     .get(`${REACT_APP_SERVER_URL}/api/bookings`, {
       params: {
@@ -31,7 +28,6 @@ async function loadSlot(date = new Date(), branch) {
     })
     .then(data => {
       bookingList = data.data.bookings.map(booking => booking.tour_date);
-      console.log('예약된 리스트', bookingList);
     });
 
   if (!isWeekend) {
@@ -44,8 +40,6 @@ async function loadSlot(date = new Date(), branch) {
     const filteredList = slotList.filter(
       slot => !bookingList.includes(slot.toISOString())
     );
-    console.log('평일', slotList);
-    console.log('평일필터', filteredList);
     return filteredList;
   } else {
     let slotList = [];
@@ -57,8 +51,6 @@ async function loadSlot(date = new Date(), branch) {
     const filteredList = slotList.filter(
       slot => !bookingList.includes(slot.toISOString())
     );
-    console.log('주말', slotList);
-    console.log('주말필터', filteredList);
     return filteredList;
   }
 }
@@ -91,44 +83,30 @@ function Booking() {
   const [mobile, setMobile] = useState('');
   const [step, setStep] = useState(1);
   const [isCompleted, setIsCompleted] = useState(null);
-
   const { register, setValue, handleSubmit, errors } = useForm({
     validateCriteriaMode: 'all'
   });
-  useEffect(() => {
-    // eslint-disable-next-line
-  }, []);
   const onSubmit = data => {
-    console.log(data);
-    axios
-      .post(`${REACT_APP_SERVER_URL}/api/bookings`, { data })
-      .then(data => console.log('돌아온데이터', data.data));
+    axios.post(`${REACT_APP_SERVER_URL}/api/bookings`, { data });
     setIsCompleted(true);
   };
-  console.log('에러', errors);
   const onBranchClick = async value => {
     setBranch(value);
-    console.log(value);
     const data = await loadSlot(selectedDate, value);
     setSlotList(data);
-    console.log('list', slotList);
   };
   const onDateClick = async value => {
     setDate(value);
     const data = await loadSlot(value, selectedBranch);
     setSlotList(data);
-    console.log(value);
   };
   const onTimeClick = value => {
     setTime(value);
-    console.log(value);
     setValue('tour_date', value);
   };
   const onMoveDateClick = value => {
     setMoveDate(value);
-    console.log(value);
   };
-
   const onPrevClick = () => {
     setStep(step - 1);
     if (step === 2) setBranch(null);
@@ -271,10 +249,6 @@ function Booking() {
             <div className={`form-group ${step === 2 ? 'active' : ''}`}>
               <h2>투어하고 싶은 지점을 선택해주세요.</h2>
               <div className="row branch">
-                {/* <div className="title">
-                  지점선택
-                  <span className="selected"> {selectedBranch}</span>
-                </div> */}
                 <div className="form">
                   {branchList.map(branch => {
                     return (
@@ -305,13 +279,6 @@ function Booking() {
             <div className={`form-group ${step === 3 ? 'active' : ''}`}>
               <h2>투어하고 싶은 타임을 선택해주세요.</h2>
               <div className="row date">
-                {/* <div className="title">
-                  일정선택
-                  <span className="selected">
-                    {selectedTime &&
-                      dayjs(selectedTime).format('YY년 MM월 DD일 HH:mm 타임')}
-                  </span>
-                </div> */}
                 <input
                   type="hidden"
                   name="tour_date"
@@ -325,10 +292,6 @@ function Booking() {
                   value={selectedDate}
                 />
                 <div className="form">
-                  {/* <div className="time selected">10:00</div>
-              <div className="time disabled">10:30</div>
-              <div className="time">11:00</div>
-              <div className="time">11:30</div> */}
                   {slotList &&
                     slotList.map(slot => {
                       return (
